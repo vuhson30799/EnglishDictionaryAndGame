@@ -1,0 +1,6 @@
+﻿  Uic'ing Source.ui...
+  moc_Source.cpp
+  Source.cpp
+  main.cpp
+D:\CNTT\Project\GiaiThuatLapTrinh\GraphicC++\GiaiThuat\GiaiThuat\Service.h(97): warning C4715: 'Service::CheckWord': not all control paths return a value
+  GiaiThuat.vcxproj -> D:\CNTT\Project\GiaiThuatLapTrinh\GraphicC++\GiaiThuat\x64\Debug\GiaiThuat.exe
