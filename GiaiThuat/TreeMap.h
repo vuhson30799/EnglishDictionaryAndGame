@@ -24,7 +24,7 @@ public:	Node root;
 			display(*node.left);
 		}
 		
-		this->treeMapInfoFile += node.toStringSaveFile();
+		this->treeMapInfoFile =  this->treeMapInfoFile + node.toStringSaveFile() + "===" + "\r\n";
 		this->treeMapInfo += node.toString();
 		this->valueNodes += node.value + " ";
 

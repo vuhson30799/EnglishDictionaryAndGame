@@ -50,7 +50,7 @@ public:
 					break;
 				default:
 					node->detail.append(line);
-					node->detail.append("\n");
+					//node->detail.append("\n");
 					break;
 				}
 				delete[] temp;
@@ -67,14 +67,14 @@ public:
 
 	void SaveDataToFile()
 	{
-		/*QFile source("Text.txt");
+		QFile source("Text.txt");
 		if (!source.open(QIODevice::Append))
 		{
 			throw new exception("Can't open this file!!");
 		}
 		source.reset();
 		source.write(this->treeMap->treeMapInfoFile.toUtf8());
-		source.close();*/
+		source.close();
 	}
 
 	QString DisplayDictionary()
@@ -92,7 +92,7 @@ public:
 		}
 		catch (exception e)
 		{
-			wcout << e.what() << endl;
+			throw e;
 		}
 	}
 

@@ -13,8 +13,22 @@ Source::Source(QWidget *parent)
 void Source::on_btnHome_1_clicked()
 {
 	ui.stackedWidget->setCurrentIndex(1);
+	ui.lblThongBaoMenuPage->setVisible(false);
 	ui.listWidget->setVisible(false);
 	ui.lineEdit->setVisible(false);
+}
+
+void Source::setContentEditPage(Node node)
+{
+	ui.editWordUpdatePage->setText(node.value);
+	ui.editPronunUpdatePage->setText(node.pronunciation);
+	ui.editTypeUpdatePage->setText(node.type);
+	ui.editMeanUpdatePage->setText(node.detail);
+
+	ui.lblWordUpdatePage_2->setText(node.value);
+	ui.lblPronunUpdatePage_2->setText(node.pronunciation);
+	ui.lblTypeUpdatePage_2->setText(node.type);
+	ui.lblMeanUpdatePage_2->setText(node.detail);
 }
 
 void Source::on_btnHome_2_clicked()
@@ -39,18 +53,19 @@ void Source::on_btnOkMenuPage_clicked()
 	{
 		//update page
 		if (ui.lineEdit->isVisible())
-		{
-			ui.stackedWidget->setCurrentIndex(4);
-			Node node = this->service->CheckWord(ui.lineEdit->text() + "\r" + "\n");
-			ui.editWordUpdatePage->setText(node.value);
-			ui.editPronunUpdatePage->setText(node.pronunciation);
-			ui.editTypeUpdatePage->setText(node.type);
-			ui.editMeanUpdatePage->setText(node.detail);
-
-			ui.lblWordUpdatePage_2->setText(node.value);
-			ui.lblPronunUpdatePage_2->setText(node.pronunciation);
-			ui.lblTypeUpdatePage_2->setText(node.type);
-			ui.lblMeanUpdatePage_2->setText(node.detail);
+		{			
+			try
+			{
+				Node node = this->service->CheckWord(ui.lineEdit->text() + "\r" + "\n");
+				this->setContentEditPage(node);
+				ui.stackedWidget->setCurrentIndex(4);
+			}
+			catch (exception e)
+			{
+				ui.lblThongBaoMenuPage->setVisible(true);
+			}
+			
+			
 		}
 		else
 		{
@@ -65,17 +80,15 @@ void Source::on_btnOkMenuPage_clicked()
 		if (ui.listWidget->currentItem() != NULL && ui.listWidget->isVisible())
 		{
 			ui.stackedWidget->setCurrentIndex(4);
-			Node node = this->service->CheckWord(ui.listWidget->currentItem()->text());
-			ui.editWordUpdatePage->setText(node.value);
-			ui.editPronunUpdatePage->setText(node.pronunciation);
-			ui.editTypeUpdatePage->setText(node.type);
-			ui.editMeanUpdatePage->setText(node.detail);
-
-			ui.lblWordUpdatePage_2->setText(node.value);
-			ui.lblPronunUpdatePage_2->setText(node.pronunciation);
-			ui.lblTypeUpdatePage_2->setText(node.type);
-			ui.lblMeanUpdatePage_2->setText(node.detail);
-
+			try
+			{
+				Node node = this->service->CheckWord(ui.listWidget->currentItem()->text());
+				this->setContentEditPage(node);
+			}
+			catch (exception e)
+			{
+				ui.lblThongBaoMenuPage->setVisible(true);
+			}	
 		}
 		else
 		{
@@ -84,6 +97,7 @@ void Source::on_btnOkMenuPage_clicked()
 			ui.listWidget->addItems(valueNodes);
 			ui.listWidget->setVisible(true);
 			ui.lineEdit->setVisible(false);
+			ui.lblThongBaoMenuPage->setVisible(false);
 		}
 		
 
@@ -97,6 +111,8 @@ void Source::on_btnOkMenuPage_clicked()
 		ui.lineEdit->setVisible(false);
 		ui.listWidget->setVisible(false);
 		ui.lblThongBaoAddPage->setVisible(false);
+		ui.lblThongBaoMenuPage->setVisible(false);
+
 
 	}
 	if (ui.btnRadio5->isChecked())
@@ -107,7 +123,9 @@ void Source::on_btnOkMenuPage_clicked()
 		ui.lblThongBaoListPage->setVisible(false);
 		ui.lineEdit->setVisible(false);
 		ui.listWidget->setVisible(false);
+		ui.lblThongBaoMenuPage->setVisible(false);
 		ui.textListPage->setPlainText(service->DisplayDictionary());
+
 
 	}
 
@@ -118,6 +136,7 @@ void Source::on_btnBackListPage_clicked()
 	ui.stackedWidget->setCurrentIndex(1);
 	ui.listWidget->setVisible(false);
 	ui.lineEdit->setVisible(false);
+	ui.lblThongBaoMenuPage->setVisible(false);
 }
 
 
@@ -177,13 +196,13 @@ void Source::on_btnEditUpdatePage_clicked()
 	{
 		this->service->UpdateWordByPronunciation(ui.editWordUpdatePage->text(), ui.editPronunUpdatePage->text());
 	}
-	/*QString x = ui.lblMeanUpdatePage_2->text();
-	QString y = ui.editMeanUpdatePage->document()->toPlainText();
+
+	//Loi plain text bo di cac ky tu /r so voi text thong thuong.
 	if (ui.lblMeanUpdatePage_2->text().compare(ui.editMeanUpdatePage->document()->toPlainText()) != 0)
 	{
 		this->service->UpdateWordByDetail(ui.editWordUpdatePage->text(), ui.editMeanUpdatePage->document()->toPlainText());
 		
-	}*/
+	}
 	ui.stackedWidget->setCurrentIndex(2);
 	ui.lblThongBaoListPage->setVisible(true);
 	ui.lblThongBaoListPage->setText("Edit Successfully!!");
@@ -195,6 +214,7 @@ void Source::on_btnBackUpdatePage_clicked()
 	ui.stackedWidget->setCurrentIndex(1);
 	ui.listWidget->setVisible(false);
 	ui.lineEdit->setVisible(false);
+	ui.lblThongBaoMenuPage->setVisible(false);
 }
 
 void Source::on_btnExitUpdatePage_clicked()
@@ -225,39 +245,185 @@ void Source::on_btnStartLv1Page_clicked()
 
 void Source::on_btnSubmitLv1Page_clicked()
 {
+	QString word = ui.lblWordLv1Page->text();
+	QChar* wordArray = word.begin();
+
+	int missWordIndex = ui.lblMissWordIndexLv1Page->text().toInt();
+
+	*(wordArray + missWordIndex) = ui.lineEditMissWordLv1Page->text().at(0);
+
+	QString inputWord = QString(wordArray);
+	ui.btnNextLv1Page->setEnabled(true);
+
+	try
+	{
+		Node node = this->service->CheckWord(inputWord);
+		this->service->PointUp();
+		ui.txtMeanLv1Page->setText(node.detail);
+		ui.btnSubmitLv1Page->setEnabled(false);
+	}
+	catch (exception e)
+	{
+		this->service->PointDown();
+		ui.txtMeanLv1Page->setText("");
+	}
+	ui.lcdGradeNumber->display(this->service->point);
 }
 
 void Source::on_btnNextLv1Page_clicked()
 {
-	this->xIndex = 100;
-	QStringList words = this->service->treeMap->valueNodes.split(" ");
-	std::srand(time(NULL));
-	this->wordIndex = rand() % (words.length() - 1);
-
-	Node node = this->service->CheckWord(words.at(wordIndex));
-	
-	int missWordIndex = rand() % (node.value.length() - 1);
-	QChar* wordArray = node.value.begin();
-	for (int i = 0; !(*(wordArray + i)).isNull(); i++)
+	ui.btnNextLv1Page->setEnabled(false);
+	ui.btnSubmitLv1Page->setEnabled(true);
+	if (this->service->stage < 10)
 	{
-		QLineEdit* btn = new QLineEdit(ui.frGameContent);
-		btn->setGeometry(this->xIndex, 130, 20, 20);
-		btn->setText(*(wordArray + i));
-		btn->setVisible(true);
-		btn->setEnabled(false);
+		ui.frContentLv1Page->deleteLater();
+		ui.frContentLv1Page = new QFrame(ui.stackedWidget->widget(6));
+		ui.frContentLv1Page->setGeometry(110, 90, 261, 101);
+		ui.frContentLv1Page->setVisible(true);
 
-		if (i == missWordIndex)
+		this->xIndex = 30;
+		QStringList words = this->service->treeMap->valueNodes.split(" ");
+		std::srand(time(NULL));
+		this->wordIndex = rand() % (words.length() - 1);
+
+		Node node = this->service->CheckWord(words.at(wordIndex));
+		ui.lblWordLv1Page->setText(node.value);
+		
+		int missWordIndex = rand() % (node.value.length() - 2);
+		QChar* wordArray = node.value.begin();
+		for (int i = 0; i < node.value.length() - 2; i++)
 		{
-			btn->setText("");
-			btn->setEnabled(true);
+			QLineEdit* btn = new QLineEdit(ui.frContentLv1Page);
+			btn->setGeometry(this->xIndex, 40, 20, 20);
+			btn->setText(*(wordArray + i));
+			btn->setVisible(true);
+			btn->setEnabled(false);
+
+			if (i == missWordIndex)
+			{
+				ui.lineEditMissWordLv1Page = btn;
+				QString num = missWordIndex + 48;
+				ui.lblMissWordIndexLv1Page->setText(num);
+				btn->setText("");
+				btn->setEnabled(true);
+			}
+			this->xIndex += 20;
 		}
-		this->xIndex += 20;
+		this->service->StageUp();
+		ui.lcdStageNumber->display(this->service->stage);
 	}
-	this->service->StageUp();
+	else
+	{
+		ui.stackedWidget->setCurrentIndex(7);
+	}
+	
 	
 }
 
 void Source::on_btnExitLv1Page_clicked()
 {
+	this->service->SaveDataToFile();
+	this->close();
+}
+
+void Source::on_btnStartLv2Page_clicked()
+{
+	ui.stackedWidget->setCurrentIndex(8);
+	ui.lcdGradeNumber->display(0);
+	ui.lcdStageNumber->display(1);
+	this->service->stage = 0;
+	this->service->point = 0;
+	on_btnNextLv2Page_clicked();
+}
+
+void Source::on_btnSubmitLv2Page_clicked()
+{
+	QString word = ui.lblWordLv2Page->text();
+	QChar* wordArray = word.begin();
+
+	int missWordIndex = ui.lblMissWordIndexLv2Page->text().toInt();
+
+	*(wordArray + missWordIndex) = ui.lineEditMissWordLv2Page->text().at(0);
+
+	QString inputWord = QString(wordArray);
+	ui.btnNextLv2Page->setEnabled(true);
+
+	try
+	{
+		Node node = this->service->CheckWord(inputWord);
+		
+		if (node.detail.compare(ui.lblMeanWordLv2Page->text()) != 0)
+		{
+			this->service->PointDown();
+			ui.btnSubmitLv2Page->setEnabled(true);
+		}
+		else
+		{
+			this->service->PointUp();
+			ui.btnSubmitLv2Page->setEnabled(false);
+		}
+	}
+	catch (exception e)
+	{
+		this->service->PointDown();
+		ui.txtMeanLv1Page->setText("");
+	}
+	ui.lcdGradeNumberLv2Page->display(this->service->point);
+}
+
+void Source::on_btnNextLv2Page_clicked()
+{
+	ui.btnNextLv2Page->setEnabled(false);
+	ui.btnSubmitLv2Page->setEnabled(true);
+	if (this->service->stage < 10)
+	{
+		ui.frContentLv2Page->deleteLater();
+		ui.frContentLv2Page = new QFrame(ui.stackedWidget->widget(8));
+		ui.frContentLv2Page->setGeometry(110, 90, 261, 101);
+		ui.frContentLv2Page->setVisible(true);
+
+		this->xIndex = 30;
+		QStringList words = this->service->treeMap->valueNodes.split(" ");
+		std::srand(time(NULL));
+		this->wordIndex = rand() % (words.length() - 1);
+
+		Node node = this->service->CheckWord(words.at(wordIndex));
+
+		ui.lblWordLv2Page->setText(node.value);
+		ui.txtMeanLv2Page->setText(node.detail);
+		ui.lblMeanWordLv2Page->setText(node.detail);
+
+		int missWordIndex = rand() % (node.value.length() - 2);
+		QChar* wordArray = node.value.begin();
+		for (int i = 0; i < node.value.length() - 2; i++)
+		{
+			QLineEdit* btn = new QLineEdit(ui.frContentLv2Page);
+			btn->setGeometry(this->xIndex, 40, 20, 20);
+			btn->setText(*(wordArray + i));
+			btn->setVisible(true);
+			btn->setEnabled(false);
+
+			if (i == missWordIndex)
+			{
+				ui.lineEditMissWordLv2Page = btn;
+				QString num = missWordIndex + 48;
+				ui.lblMissWordIndexLv2Page->setText(num);
+				btn->setText("");
+				btn->setEnabled(true);
+			}
+			this->xIndex += 20;
+		}
+		this->service->StageUp();
+		ui.lcdStageNumberLv2Page->display(this->service->stage);
+	}
+	else
+	{
+		ui.stackedWidget->setCurrentIndex(9);
+	}
+}
+
+void Source::on_btnExitLv2Page_clicked()
+{
+	this->service->SaveDataToFile();
 	this->close();
 }

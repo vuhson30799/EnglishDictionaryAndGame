@@ -17,8 +17,11 @@ private:
 	Service* service;
 	int xIndex;
 	int wordIndex;
+	void setContentEditPage(Node);
 
 public slots:
+	
+
 	void on_btnHome_1_clicked();
 	void on_btnHome_2_clicked();
 	void on_btnHome_3_clicked();
@@ -41,5 +44,12 @@ public slots:
 	void on_btnSubmitLv1Page_clicked();
 	void on_btnNextLv1Page_clicked();
 	void on_btnExitLv1Page_clicked();
+
+	void on_btnStartLv2Page_clicked();
+	void on_btnSubmitLv2Page_clicked();
+	void on_btnNextLv2Page_clicked();
+	void on_btnExitLv2Page_clicked();
+
+	
 
 };
