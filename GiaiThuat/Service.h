@@ -4,6 +4,7 @@ class Service
 {
 public:
 	const QString REGEX = "===\r\n";
+	const QString REMOVE_REGEX = "\r\n";
 	TreeMap* treeMap;
 	int point;
 	int stage;

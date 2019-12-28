@@ -25,15 +25,15 @@ Node::Node(QString value, QString pronunciation, QString type, QString detail)
 
 QString Node::toString()
 {
-	return this->value + "\n\t"
-		+ this->pronunciation + "\n\t"
-		+ this->type + "\n\t"
-		+ this->detail;
+	return this->value + "\n"
+		+ this->pronunciation + "\n"
+		+ this->type + "\n"
+		+ this->detail + "\n";
 }
 
 QString Node::toStringSaveFile()
 {
-	return this->value + this->pronunciation + this->type + this->detail;
+	return this->value + "\r\n" + this->pronunciation + "\r\n" + this->type + "\r\n" + this->detail + "\r\n";
 }
 
 bool Node::operator==(Node node)

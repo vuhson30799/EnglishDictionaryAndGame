@@ -21,7 +21,7 @@ void TreeMap::display(Node& node)
 	}
 
 	this->treeMapInfoFile = this->treeMapInfoFile + node.toStringSaveFile() + "===" + "\r\n";
-	this->treeMapInfo += node.toString();
+	this->treeMapInfo =this->treeMapInfo + "\r\n" + node.toString() + "\r\n \t\t ************************** \r\n";
 	this->valueNodes += node.value + " ";
 
 	if (node.right != NULL)

@@ -9,21 +9,21 @@ Source::Source(QWidget *parent)
 	this->wordIndex = 0;
 
 	ui.setupUi(this);
-	QPixmap home("D:/CNTT/Project/GiaiThuatLapTrinh/GraphicC++/GiaiThuat/GiaiThuat/Resources/english3_Home_Page.jpg");
+	QPixmap home("D:/CNTT/Project/final/EnglishDictionaryAndGame/GiaiThuat/Resources/english3_home_page.jpg");
 	ui.lblImageHomePage->setPixmap(home);
 
-	QPixmap gameLv1Page("D:/CNTT/Project/GiaiThuatLapTrinh/GraphicC++/GiaiThuat/GiaiThuat/Resources/GameLv1Page.jpg");
+	QPixmap gameLv1Page("D:/CNTT/Project/final/EnglishDictionaryAndGame/GiaiThuat/Resources/GameLv1Page.jpg");
 	ui.lblImageGameLv1Page->setPixmap(gameLv1Page);
 	ui.lblImageGameLv2Page->setPixmap(gameLv1Page);
 
-	QPixmap lv1Page("D:/CNTT/Project/GiaiThuatLapTrinh/GraphicC++/GiaiThuat/GiaiThuat/Resources/Lv1Page.jpg");
+	QPixmap lv1Page("D:/CNTT/Project/final/EnglishDictionaryAndGame/GiaiThuat/Resources/Lv1Page.jpg");
 	ui.lblImageLv1Page->setPixmap(lv1Page);
 	ui.lblImageLv2Page->setPixmap(lv1Page);
 
-	QPixmap lastPage("D:/CNTT/Project/GiaiThuatLapTrinh/GraphicC++/GiaiThuat/GiaiThuat/Resources/lastPage.jpg");
+	QPixmap lastPage("D:/CNTT/Project/final/EnglishDictionaryAndGame/GiaiThuat/Resources/lastPage.jpg");
 	ui.lblEndGame->setPixmap(lastPage);
 
-	QIcon icon("D:/CNTT/Project/GiaiThuatLapTrinh/resource/windowIcon.jpg");
+	QIcon icon("D:/CNTT/Project/final/EnglishDictionaryAndGame/GiaiThuat/Resources/windowIcon.jpg");
 	this->setWindowIcon(icon);
 
 	this->service = new Service();
@@ -76,7 +76,7 @@ void Source::on_btnOkMenuPage_clicked()
 		{			
 			try
 			{
-				Node node = this->service->CheckWord(ui.lineEdit->text() + "\r" + "\n");
+				Node node = this->service->CheckWord(ui.lineEdit->text());
 				this->setContentEditPage(node);
 				ui.stackedWidget->setCurrentIndex(4);
 			}
@@ -180,10 +180,6 @@ void Source::on_btnOkAddPage_clicked()
 		ui.lblThongBaoAddPage->setVisible(true);
 		return;
 	}
-	detail = detail + "\r" + "\n";
-	value = value + "\r" + "\n";
-	pronunciation = pronunciation + "\r" + "\n";
-	type = type + "\r" + "\n";
 	Node* node = new Node(value,pronunciation,type,detail);
 
 	this->service->AddNewWord(*node);
@@ -217,7 +213,6 @@ void Source::on_btnEditUpdatePage_clicked()
 		this->service->UpdateWordByPronunciation(ui.editWordUpdatePage->text(), ui.editPronunUpdatePage->text());
 	}
 
-	//Loi plain text bo di cac ky tu /r so voi text thong thuong.
 	if (ui.lblMeanUpdatePage_2->text().compare(ui.editMeanUpdatePage->document()->toPlainText()) != 0)
 	{
 		this->service->UpdateWordByDetail(ui.editWordUpdatePage->text(), ui.editMeanUpdatePage->document()->toPlainText());
@@ -239,7 +234,7 @@ void Source::on_btnBackUpdatePage_clicked()
 
 void Source::on_btnExitUpdatePage_clicked()
 {
-	this->close();
+	Source::on_btnHome_3_clicked();
 }
 
 void Source::on_btnDeletePage_clicked()
@@ -317,9 +312,9 @@ void Source::on_btnNextLv1Page_clicked()
 		Node node = this->service->CheckWord(words.at(wordIndex));
 		ui.lblWordLv1Page->setText(node.value);
 		
-		int missWordIndex = rand() % (node.value.length() - 2);
+		int missWordIndex = rand() % node.value.length();
 		QChar* wordArray = node.value.begin();
-		for (int i = 0; i < node.value.length() - 2; i++)
+		for (int i = 0; i < node.value.length(); i++)
 		{
 			QLineEdit* btn = new QLineEdit(ui.frContentLv1Page);
 			btn->setGeometry(this->xIndex, 40, 20, 20);
@@ -350,8 +345,7 @@ void Source::on_btnNextLv1Page_clicked()
 
 void Source::on_btnExitLv1Page_clicked()
 {
-	this->service->SaveDataToFile();
-	this->close();
+	Source::on_btnHome_3_clicked();
 }
 
 void Source::on_btnBackLv1Page_clicked()
@@ -433,9 +427,9 @@ void Source::on_btnNextLv2Page_clicked()
 		ui.txtMeanLv2Page->setText(node.detail);
 		ui.lblMeanWordLv2Page->setText(node.detail);
 
-		int missWordIndex = rand() % (node.value.length() - 2);
+		int missWordIndex = rand() % node.value.length();
 		QChar* wordArray = node.value.begin();
-		for (int i = 0; i < node.value.length() - 2; i++)
+		for (int i = 0; i < node.value.length(); i++)
 		{
 			QLineEdit* btn = new QLineEdit(ui.frContentLv2Page);
 			btn->setGeometry(this->xIndex, 40, 20, 20);
@@ -464,8 +458,7 @@ void Source::on_btnNextLv2Page_clicked()
 
 void Source::on_btnExitLv2Page_clicked()
 {
-	this->service->SaveDataToFile();
-	this->close();
+	Source::on_btnHome_3_clicked();
 }
 
 void Source::on_btnBackLv2Page_clicked()
@@ -475,8 +468,7 @@ void Source::on_btnBackLv2Page_clicked()
 
 void Source::on_btnExitLastPage_clicked()
 {
-	this->service->SaveDataToFile();
-	this->close();
+	Source::on_btnHome_3_clicked();
 }
 
 void Source::on_btnBackLastPage_clicked()

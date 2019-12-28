@@ -29,20 +29,22 @@ void Service::GetDataFromFile()
 			switch (indexLine)
 			{
 			case 1:
+				line.remove(REMOVE_REGEX);
 				node->value = line;
 				indexLine++;
 				break;
 			case 2:
+				line.remove(REMOVE_REGEX);
 				node->type = line;
 				indexLine++;
 				break;
 			case 3:
+				line.remove(REMOVE_REGEX);
 				node->pronunciation = line;
 				indexLine++;
 				break;
 			default:
 				node->detail.append(line);
-				//node->detail.append("\n");
 				break;
 			}
 			delete[] temp;
@@ -51,6 +53,7 @@ void Service::GetDataFromFile()
 			line = temp;
 
 		}
+		node->detail.remove(node->detail.length() - 2, 2);
 		this->treeMap->add(*node);
 	}
 	QString dictionary = DisplayDictionary();
