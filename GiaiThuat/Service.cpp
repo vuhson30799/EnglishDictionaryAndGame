@@ -1,25 +1,139 @@
-﻿#include "Service.h"
+#include "Service.h"
 
+void Service::GetDataFromFile()
+{
+	QFile source("WordSource.txt");
 
+	if (!source.open(QIODevice::ReadOnly))
+	{
+		throw new exception("Can't open this file!!");
+	}
+	char* temp = new char[255];
+	this->treeMap = new TreeMap();
+	QString line;
+	Node* node;
+	int indexLine = 1;
 
-//int main()
-//{
-//	
-//	_setmode(_fileno(stdout), _O_WTEXT);
-//	TreeMap* treeMap = new TreeMap();
-//
-//	Service* service = new Service();
-//
-//	treeMap = service->GetDataFromFile("WordSource.txt");
-//
-//	treeMap->display(treeMap->root);
-//	
-//	wcout << L"Thông tin của node trc khi sửa: " << endl;
-//	service->DisplayWordInfo(L"teacher");
-//	
-//	service->UpdateWordByType(L"teacher", L"verb");
-//	wcout << L"Thông tin của node sau khi sửa: " << endl;
-//	service->DisplayWordInfo(L"teacher");
-//
-//	system("pause");
-//}
+	while (source.isReadable())
+	{
+		indexLine = 1;
+		node = new Node();
+		source.readLine(temp, 255);
+		line = temp;
+		if (line.isEmpty())
+		{
+			break;
+		}
+		while (!(REGEX.compare(line) == 0))
+		{
+			switch (indexLine)
+			{
+			case 1:
+				node->value = line;
+				indexLine++;
+				break;
+			case 2:
+				node->type = line;
+				indexLine++;
+				break;
+			case 3:
+				node->pronunciation = line;
+				indexLine++;
+				break;
+			default:
+				node->detail.append(line);
+				//node->detail.append("\n");
+				break;
+			}
+			delete[] temp;
+			temp = new char[255];
+			source.readLine(temp, 255);
+			line = temp;
+
+		}
+		this->treeMap->add(*node);
+	}
+	QString dictionary = DisplayDictionary();
+	source.close();
+}
+
+void Service::SaveDataToFile()
+{
+	QString dictionary = DisplayDictionary();
+	QFile source("WordSource.txt");
+	source.remove();
+	if (!source.open(QIODevice::NewOnly))
+	{
+		throw new exception("Can't open this file!!");
+	}
+	source.write(this->treeMap->treeMapInfoFile.toUtf8());
+	source.close();
+}
+
+QString Service::DisplayDictionary()
+{
+	return this->treeMap->toString();
+}
+
+Node Service::CheckWord(QString value)
+{
+	try
+	{
+		Node searchNode(value);
+		Node node = this->treeMap->search(searchNode);
+		return node;
+	}
+	catch (exception e)
+	{
+		throw e;
+	}
+}
+
+void Service::AddNewWord(Node& node)
+{
+	this->treeMap->add(node);
+}
+
+void Service::UpdateWordByValue(QString oldVal, QString newVal)
+{
+	this->treeMap->editNodeValue(oldVal, newVal);
+}
+
+void Service::UpdateWordByType(QString value, QString newType)
+{
+	this->treeMap->editNodeType(value, newType);
+}
+
+void Service::UpdateWordByPronunciation(QString value, QString pronounce)
+{
+	this->treeMap->editNodePronun(value, pronounce);
+}
+
+void Service::UpdateWordByDetail(QString value, QString detail)
+{
+	this->treeMap->editNodeDetail(value, detail);
+}
+
+void Service::DeleteWord(QString word)
+{
+	Node node = CheckWord(word);
+	this->treeMap->deleteNode(node);
+}
+
+void Service::PointUp()
+{
+	this->point += 1000;
+}
+
+void Service::PointDown()
+{
+	if (this->point != 0)
+	{
+		this->point -= 500;
+	}
+}
+
+void Service::StageUp()
+{
+	this->stage++;
+}

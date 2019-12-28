@@ -5,7 +5,27 @@
 Source::Source(QWidget *parent)
 	: QMainWindow(parent)
 {
+	this->xIndex = 0;
+	this->wordIndex = 0;
+
 	ui.setupUi(this);
+	QPixmap home("D:/CNTT/Project/GiaiThuatLapTrinh/GraphicC++/GiaiThuat/GiaiThuat/Resources/english3_Home_Page.jpg");
+	ui.lblImageHomePage->setPixmap(home);
+
+	QPixmap gameLv1Page("D:/CNTT/Project/GiaiThuatLapTrinh/GraphicC++/GiaiThuat/GiaiThuat/Resources/GameLv1Page.jpg");
+	ui.lblImageGameLv1Page->setPixmap(gameLv1Page);
+	ui.lblImageGameLv2Page->setPixmap(gameLv1Page);
+
+	QPixmap lv1Page("D:/CNTT/Project/GiaiThuatLapTrinh/GraphicC++/GiaiThuat/GiaiThuat/Resources/Lv1Page.jpg");
+	ui.lblImageLv1Page->setPixmap(lv1Page);
+	ui.lblImageLv2Page->setPixmap(lv1Page);
+
+	QPixmap lastPage("D:/CNTT/Project/GiaiThuatLapTrinh/GraphicC++/GiaiThuat/GiaiThuat/Resources/lastPage.jpg");
+	ui.lblEndGame->setPixmap(lastPage);
+
+	QIcon icon("D:/CNTT/Project/GiaiThuatLapTrinh/resource/windowIcon.jpg");
+	this->setWindowIcon(icon);
+
 	this->service = new Service();
 	service->GetDataFromFile();
 }
@@ -249,8 +269,15 @@ void Source::on_btnSubmitLv1Page_clicked()
 	QChar* wordArray = word.begin();
 
 	int missWordIndex = ui.lblMissWordIndexLv1Page->text().toInt();
-
-	*(wordArray + missWordIndex) = ui.lineEditMissWordLv1Page->text().at(0);
+	if (ui.lineEditMissWordLv1Page->text() != NULL)
+	{
+		*(wordArray + missWordIndex) = ui.lineEditMissWordLv1Page->text().at(0);
+	}
+	else
+	{
+		*(wordArray + missWordIndex) = ' ';
+	}
+	
 
 	QString inputWord = QString(wordArray);
 	ui.btnNextLv1Page->setEnabled(true);
@@ -274,6 +301,7 @@ void Source::on_btnNextLv1Page_clicked()
 {
 	ui.btnNextLv1Page->setEnabled(false);
 	ui.btnSubmitLv1Page->setEnabled(true);
+	ui.txtMeanLv1Page->setText("");
 	if (this->service->stage < 10)
 	{
 		ui.frContentLv1Page->deleteLater();
@@ -326,6 +354,11 @@ void Source::on_btnExitLv1Page_clicked()
 	this->close();
 }
 
+void Source::on_btnBackLv1Page_clicked()
+{
+	ui.stackedWidget->setCurrentIndex(0);
+}
+
 void Source::on_btnStartLv2Page_clicked()
 {
 	ui.stackedWidget->setCurrentIndex(8);
@@ -343,7 +376,14 @@ void Source::on_btnSubmitLv2Page_clicked()
 
 	int missWordIndex = ui.lblMissWordIndexLv2Page->text().toInt();
 
-	*(wordArray + missWordIndex) = ui.lineEditMissWordLv2Page->text().at(0);
+	if (ui.lineEditMissWordLv2Page->text() != NULL)
+	{
+		*(wordArray + missWordIndex) = ui.lineEditMissWordLv2Page->text().at(0);
+	}
+	else
+	{
+		*(wordArray + missWordIndex) = ' ';
+	}
 
 	QString inputWord = QString(wordArray);
 	ui.btnNextLv2Page->setEnabled(true);
@@ -426,4 +466,20 @@ void Source::on_btnExitLv2Page_clicked()
 {
 	this->service->SaveDataToFile();
 	this->close();
+}
+
+void Source::on_btnBackLv2Page_clicked()
+{
+	ui.stackedWidget->setCurrentIndex(0);
+}
+
+void Source::on_btnExitLastPage_clicked()
+{
+	this->service->SaveDataToFile();
+	this->close();
+}
+
+void Source::on_btnBackLastPage_clicked()
+{
+	ui.stackedWidget->setCurrentIndex(0);
 }

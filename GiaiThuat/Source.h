@@ -44,12 +44,14 @@ public slots:
 	void on_btnSubmitLv1Page_clicked();
 	void on_btnNextLv1Page_clicked();
 	void on_btnExitLv1Page_clicked();
+	void on_btnBackLv1Page_clicked();
 
 	void on_btnStartLv2Page_clicked();
 	void on_btnSubmitLv2Page_clicked();
 	void on_btnNextLv2Page_clicked();
 	void on_btnExitLv2Page_clicked();
+	void on_btnBackLv2Page_clicked();
 
-	
-
+	void on_btnExitLastPage_clicked();
+	void on_btnBackLastPage_clicked();
 };

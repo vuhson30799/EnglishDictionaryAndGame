@@ -1,219 +1,245 @@
-#include <iostream>
-using namespace std;
-struct Node
+#include "TreeMap.h"
+
+QString TreeMap::toString()
 {
-	Node* left = NULL;
-	Node* right = NULL;
-	string value;
-	
-};
-struct TreeMap
+	this->treeMapInfo = "";
+	this->valueNodes = "";
+	this->treeMapInfoFile = "";
+	display(root);
+	return this->treeMapInfo;
+}
+
+TreeMap::TreeMap()
+{}
+
+void TreeMap::display(Node& node)
 {
-	Node* root;
-	int size = 0;
 
-	TreeMap()
+	if (node.left != NULL)
 	{
-		TreeMap::root = NULL;
+		display(*node.left);
 	}
 
-	void display(Node* root)
+	this->treeMapInfoFile = this->treeMapInfoFile + node.toStringSaveFile() + "===" + "\r\n";
+	this->treeMapInfo += node.toString();
+	this->valueNodes += node.value + " ";
+
+	if (node.right != NULL)
 	{
-		
-		if (root->left != NULL)
-		{
-			display(root->left);
-		}
-
-		cout << root->value << endl;
-
-		if (root->right != NULL)
-		{
-			display(root->right);
-		}
+		display(*node.right);
 	}
+}
 
-	Node* search(Node* node)
-	{
-		Node* current = this->root;
-		while (current != NULL)
-		{
-			if ((*current).value._Equal(node->value)) 
-			{
-				return current;
-			}
-			if (node->value < (*current).value)
-			{
-				current = current->left;
-			}
-			else
-			{
-				current = current->right;
-			}
-		}
-		throw exception("This node is not exist");
-	}
-
-	Node* deleteNode(Node* node)
-	{
-			Node* current = this->root;
-			Node* parent = this->root;
-			bool isNodeExist = false;
-			while (current != NULL)
-			{
-				if (node->value < (*current).value)
-				{
-					parent = current;
-					current = (current->left);
-				}
-				else if (node->value > (*current).value)
-				{
-					parent = current;
-					current = (current)->right;
-				}
-				else
-				{
-					isNodeExist = true;
-					break;
-				}
-			}
-
-			if (isNodeExist)
-			{
-				if (current->left == NULL)
-				{
-					if (current == parent)
-					{
-						current = current->right;
-					}
-					else
-					{
-						if (parent->left->value._Equal(current->value))
-						{
-							parent->left = current->right;
-						}
-						else
-						{
-							parent->right = current->right;
-						}
-					}
-					
-				}
-				else
-				{
-					Node* leftParentTreeNode = current;
-					Node* leftTreeNode = current->left;
-					while (leftTreeNode->right != NULL)
-					{
-						leftParentTreeNode = leftTreeNode;
-						leftTreeNode = leftTreeNode->right;
-					}
-
-					if (current == parent)
-					{
-						parent->value = leftTreeNode->value;
-						this->root = current;
-					}
-					else
-					{
-						if (parent->left->value._Equal(current->value))
-						{
-							parent->left->value = leftTreeNode->value;
-						}
-						else
-						{
-							parent->right->value = leftTreeNode->value;
-						}
-					}
-					
-
-					if (leftParentTreeNode->left == NULL)
-					{
-						leftParentTreeNode->right = NULL;
-					}
-					else
-					{
-						leftParentTreeNode->right = leftTreeNode->left;
-					}
-				}
-				return current;
-			}
-			else
-			{
-				throw new exception("This node is not exist!!");
-			}
-	}
-};
-
-void add(TreeMap* MyTree, string value)
+void TreeMap::add(Node& node)
 {
-	if (MyTree->size == 0)
+	if (this->size == 0)
 	{
-		MyTree->root = new Node;
-		MyTree->root->value = value;
-		MyTree->size++;
+		this->root = node;
+		this->size++;
 		return;
 	}
 
-	Node* node = new Node;
-	node->value = value;
-	Node* current = MyTree->root;
-	Node* parent = MyTree->root;
+	Node* current = &this->root;
+	Node* parent = &this->root;
+
 	while (current != NULL)
 	{
-		if (node->value <= (*current).value)
+		if (node < *current)
 		{
 			parent = current;
-			current = (current->left);
+			current = (*current).left;
 		}
 		else
 		{
 			parent = current;
-			current = (current)->right;
+			current = (*current).right;
 		}
 	}
-	if (node->value < parent->value)
+	if (node < *parent)
 	{
-		parent->left = node;
+		parent->left = new Node();
+		*parent->left = node;
 	}
 	else
 	{
-		parent->right = node;
+		parent->right = new Node();
+		*parent->right = node;
 	}
-	return;
+	this->size++;
 }
 
-
-
-int main()
+Node TreeMap::search(Node node)
 {
-	TreeMap* MyTree = new TreeMap;
-	add(MyTree,"home");
-	add(MyTree,"cat");
-	add(MyTree, "map");
-	add(MyTree, "define");
-
-	MyTree->display(MyTree->root);
-
-	Node* node = new Node;
-	node->value = "home";
-	try
+	Node* current = &this->root;
+	while (current != NULL)
 	{
-		Node* FoundNode = MyTree->search(node);
-		cout << "Node is found!!" << endl;
-		cout << FoundNode->value << endl;
-
-		Node* deletedNode = MyTree->deleteNode(FoundNode);
-
-		cout << "Node is deleted" << endl;
-		cout << deletedNode->value << endl;
-
-		cout << "My tree" << endl;
-		MyTree->display(MyTree->root);
+		if (*current == node)
+		{
+			return *current;
+		}
+		if (node < *current)
+		{
+			current = (*current).left;
+		}
+		else
+		{
+			current = (*current).right;
+		}
 	}
-	catch (const std::exception e)
+	throw exception("This node is not exist");
+}
+
+void TreeMap::deleteNode(Node& node)
+{
+	if (this->size == 0)
 	{
-		cout << e.what();
+		throw new exception("there is nothing to remove!!");
 	}
-	
+	else
+	{
+		Node* current = &this->root;
+		Node* parent = &this->root;
+		bool isNodeExist = false;
+		while (current != NULL)
+		{
+			if (node < *current)
+			{
+				parent = current;
+				current = (*current).left;
+			}
+			else if (node > * current)
+			{
+				parent = current;
+				current = (*current).right;
+			}
+			else
+			{
+				isNodeExist = true;
+				break;
+			}
+		}
+
+		if (isNodeExist)
+		{
+			this->size--;
+			if ((*current).left == NULL)
+			{
+				//node tim dc la root
+				if (current == parent)
+				{
+					current = (*current).right;
+				}
+				else
+				{
+					if ((*parent).left == current)
+					{
+						(*parent).left = (*current).right;
+						current = NULL;
+					}
+					else
+					{
+						(*parent).right = (*current).right;
+						current = NULL;
+					}
+				}
+
+			}
+			else
+			{
+				Node* leftParentTreeNode = current;
+				Node* leftTreeNode = (*current).left;
+				while ((*leftTreeNode).right != NULL)
+				{
+					leftParentTreeNode = leftTreeNode;
+					leftTreeNode = (*leftTreeNode).right;
+				}
+
+				this->editNode((*current), (*leftTreeNode));
+
+				if (leftParentTreeNode == current)
+				{
+					(*leftParentTreeNode).left = (*leftTreeNode).left;
+					return;
+				}
+				if (leftTreeNode->left != NULL)
+				{
+					(*leftParentTreeNode).right = (*leftTreeNode).left;
+				}
+				else
+				{
+					(*leftParentTreeNode).right = NULL;
+				}
+			}
+		}
+		else
+		{
+			throw new exception("This node is not exist!!");
+		}
+	}
+}
+
+int TreeMap::getSize()
+{
+	return this->size;
+}
+
+Node& TreeMap::searchEditNode(QString value)
+{
+	Node* current = &this->root;
+	while (current != NULL)
+	{
+		if (value.compare((*current).value) == 0)
+		{
+			return *current;
+		}
+		if (value.compare((*current).value) < 0)
+		{
+			current = (*current).left;
+		}
+		else
+		{
+			current = (*current).right;
+		}
+	}
+	throw exception("This node is not exist");
+}
+
+void TreeMap::editNodeValue(QString oldVal, QString newVal)
+{
+	//luu tru bien ngoai de xoa bien trong cay, tao gia tri moi cho bien ngoai va add lai vao cay
+	Node node = this->search(oldVal);
+	deleteNode(node);
+	node.left = NULL;
+	node.right = NULL;
+	node.value = newVal;
+	add(node);
+}
+
+void TreeMap::editNodeType(QString value, QString newType)
+{
+	//tao bien tham chieu toi node tren cay, sua node
+	Node& node = this->searchEditNode(value);
+	node.type = newType;
+}
+
+void TreeMap::editNodePronun(QString value, QString newPronun)
+{
+	//tao bien tham chieu toi node tren cay, sua node
+	Node& node = this->searchEditNode(value);
+	node.pronunciation = newPronun;
+}
+
+void TreeMap::editNodeDetail(QString value, QString newDetail)
+{
+	//tao bien tham chieu toi node tren cay, sua node
+	Node& node = this->searchEditNode(value);
+	node.detail = newDetail;
+}
+
+void TreeMap::editNode(Node& node1, Node& node2)
+{
+	node1.value = node2.value;
+	node1.type = node2.type;
+	node1.pronunciation = node2.pronunciation;
+	node1.detail = node2.detail;
 }

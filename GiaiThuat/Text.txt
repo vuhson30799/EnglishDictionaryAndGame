@@ -2,44 +2,50 @@ cat
 /kæt/
 noun
 con mèo
+
 mụ đàn bà nanh ác; đứa bé hay cào cấu
-===
+
 cut
 /k^t/
 noun,verb
 sự cắt, sự đốn, sự chặt, sự thái; nhát chém, nhát thái, vết đứt, vết xẻ, vết mổ
+
 sự giảm, sự hạ, sự cắt bớt
-cắt, hello, chém, thái, xén, xẻo, hớt, xẻ, đào, khắc, gọt, chạm
-hello
-===
+
+cắt, chặt, chém, thái, xén, xẻo, hớt, xẻ, đào, khắc, gọt, chạm
+
 define
 /di'fain/
 verb
 định nghĩa (một từ...)
+
 định rõ, vạch rõ (hình dạng, ranh giới...)
+
 xác định đặc điểm, chỉ rõ tính chất
-===
+
 hello
 /hə'lou/
 verb
 chào anh!, chào chị!
+
 tiếng chào
-===
+
 home
 /houm/
 noun
 nhà
-home
-===
+
 teacher
 /'ti:tʃə/
 noun
 giáo viên, cán bộ giảng dạy
-===
+
 world
 /wə:ld/
 noun
 thế giới, hoàn cầu, địa cầu
+
 vũ trụ, vạn vật
+
 thế gian, trần tục, cõi trần gian, thế giới
-===
+
